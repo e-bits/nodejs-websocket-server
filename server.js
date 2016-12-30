@@ -10,35 +10,41 @@ app.use(bodyParser.urlencoded({"extended" : false}));
 
 io.on('connection', function(client){
     console.log("WebSocket connection established");
-    client.on('jsonObject', function(data) {
+
+    client.on('ledon', function(data) {
+        console.log("WebSocket: ledon arrived")
+        console.log(data);
+    });
+
+    client.on('ledoff', function(data) {
+        console.log("WebSocket: ledoff arrived")
         console.log(data);
     });
 });
 
 router.get("/",function(req,res){
-    res.json({"error" : false,"message" : "Welcome to nodejs-websocket-server"});
+    res.json({"message" : "Welcome to nodejs-websocket-server"});
 });
 
 router.route("/ledon")
     .post(function(req,res){
-        var ledid = req.body.ledid;        
-        res.json({"error" : false, "ledid" : ledid, "message" : "TurnOn"});
-        console.log("TurnOn " + ledid);
+        var ledid = req.body.ledid;
+        var ledcolor = req.body.ledcolor;
+        var response = {"ledid" : ledid, "message" : "TurnOn", "ledcolor": ledcolor};
+
+        io.emit('ledon',response);        
+        res.json(response);
+        console.log(response);
     });
 
 router.route("/ledoff")
     .post(function(req,res){
         var ledid = req.body.ledid;
-        res.json({"error" : false, "ledid" : ledid, "message" : "TurnOff"});
-        console.log("TurnOff " + ledid);        
-    });
+        var response = {"ledid" : ledid, "message" : "TurnOff"};
 
-router.route("/ledcolor")
-    .post(function(req,res){
-        var ledid = req.body.ledid;
-        var ledcolor = req.body.ledcolor;
-        res.json({"error" : false, "ledid" : ledid, "message" : "ChangeColor", "ledcolor": ledcolor});
-        console.log("ChangeColor " + ledid + " " + ledcolor);                
+        io.emit('ledoff',response);        
+        res.json(response);
+        console.log(response);
     });
 
 app.use('/',router);
