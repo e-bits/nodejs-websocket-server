@@ -8,7 +8,7 @@ var bodyParser  =   require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
 
-io.on('connection', , function(client){
+io.on('connection', function(client){
     console.log("WebSocket connection established");
     client.on('jsonObject', function(data) {
         console.log(data);
