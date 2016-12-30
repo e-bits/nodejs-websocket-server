@@ -1,17 +1,16 @@
 var express     =   require("express");
 var app         =   express();
-var bodyParser  =   require("body-parser");
+var server      =   require("http").createServer(app);  
+var io          =   require("socket.io")(server);
 var router      =   express.Router();
-// var io          =   require('socket.io')(express);
+var bodyParser  =   require("body-parser");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
 
-/*
 io.on('connection', function(){
     console.log("WebSocket connection established");
 });
-*/
 
 router.get("/",function(req,res){
     res.json({"error" : false,"message" : "Welcome to nodejs-websocket-server"});
@@ -41,5 +40,5 @@ router.route("/ledcolor")
 
 app.use('/',router);
 
-app.listen(8080);
+server.listen(8080);
 console.log("Listening to PORT 8080");
