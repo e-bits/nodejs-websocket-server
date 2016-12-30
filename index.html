@@ -1,0 +1,29 @@
+<!doctype html>  
+<html lang="en">  
+    <head>
+
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <div id="future"></div>
+        <form id="form" id="chat_form">
+            <input id="ledid" type="text">
+            <input id="ledcolor" type="text">
+            <input type="submit" value="Send">
+        </form>
+         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="/socket.io/socket.io.js"></script>  
+        <script>  
+            var socket = io.connect('http://esp8266-websocket.apps.inderbitzin.io');
+
+            $('form').submit(function(e){
+                e.preventDefault();
+                var ledid = $('#ledid').val();
+                var ledcolor = $('#ledcolor').val();
+                var message = '{"ledid":' + ledid + ', "ledcolor":' + ledcolor + '}';
+                console.log(message);
+                socket.emit('ledon', message);
+            });
+        </script>          
+    </body>
+</html>  

@@ -13,7 +13,9 @@ io.on('connection', function(client){
 });
 
 router.get("/",function(req,res){
-    res.json({"message" : "Welcome to nodejs-websocket-server"});
+    // res.json({"message" : "Welcome to nodejs-websocket-server"});
+    res.sendFile(__dirname + '/index.html');
+
 });
 
 router.route("/ledon")
