@@ -10,16 +10,6 @@ app.use(bodyParser.urlencoded({"extended" : false}));
 
 io.on('connection', function(client){
     console.log("WebSocket connection established");
-
-    client.on('ledon', function(data) {
-        console.log("WebSocket: ledon arrived")
-        console.log(data);
-    });
-
-    client.on('ledoff', function(data) {
-        console.log("WebSocket: ledoff arrived")
-        console.log(data);
-    });
 });
 
 router.get("/",function(req,res){
