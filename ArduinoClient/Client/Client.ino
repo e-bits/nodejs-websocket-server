@@ -31,7 +31,7 @@ void setup()
   pixels.setBrightness(50);
   pixels.show();
 
-  WiFiMulti.addAP("ssid", "password");
+  WiFiMulti.addAP("Olymp", "crux896#seat");
 
   while (WiFiMulti.run() != WL_CONNECTED)
   {
