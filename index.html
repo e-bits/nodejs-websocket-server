@@ -1,29 +1,86 @@
-<!doctype html>  
-<html lang="en">  
-    <head>
+<!doctype html>
+<html lang="en-US">
 
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <div id="future"></div>
-        <form id="form" id="chat_form">
-            <input id="ledid" type="text">
-            <input id="ledcolor" type="text">
-            <input type="submit" value="Send">
-        </form>
-         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="/socket.io/socket.io.js"></script>  
-        <script>  
-            var socket = io.connect('http://esp8266-websocket.apps.inderbitzin.io');
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html">
+    <title>ESP8266 Color Picker</title>
+    <meta name="author" content="Remo Inderbitzin">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.4/jquery.minicolors.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.2.4/jquery.minicolors.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js"></script>
+</head>
 
-            $('form').submit(function(e){
-                e.preventDefault();
-                var ledid = $('#ledid').val();
-                var ledcolor = $('#ledcolor').val();
-                var message = '{"ledid":' + ledid + ', "ledcolor":' + ledcolor + '}';
-                console.log(message);
-                socket.emit('ledon', message);
+<body>
+    <div class="container">
+        <h1>ESP8266 Color Picker</h1>
+        <h3>Inline Color Picker</h3>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" id="inlinecolors" class="form-control" data-inline="true" value="#1bde1b">
+                    </div>
+                </div>
+
+                <div id="inlinecolorhex" class="col-md-8">
+                    <h3 id="hexcolor">HEX: <small>#1bde1b</small></h3>
+                    <h3 id="intcolor">INT: <small>1826331</small></h3>
+                    <h3 >LED ID: </h3>
+                    <input class="form-control input-lg" type="number" value="2" id="ledid"><br>
+                    <div class="btn-group" role="group" aria-label="asdf">
+                        <button type="button" id="ledon" class="btn btn-success btn-lg">On</button>
+                        <button type="button" id="ledoff" class="btn btn-danger btn-lg">Off</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- @end .row -->
+        </div>
+        <!-- @end .well -->
+    </div>
+    <!-- @end .container -->
+    <script type="text/javascript">
+        var socket = io.connect('esp8266-websocket.apps.inderbitzin.io');
+        var $ledcolor = 1826331;
+        var $ledid = $('#ledid').val();
+
+        $('#ledid').on('change', function (event) {
+            $ledid = $('#ledid').val();
+        });
+
+        $('#ledon').on('click', function (event) {
+            var message = { "ledid": $ledid, "ledcolor": $ledcolor }
+            socket.emit('ledon', message);
+        });
+
+        $('#ledoff').on('click', function (event) {
+            var message = { "ledid": $ledid }
+            socket.emit('ledoff', message);
+        });
+
+        $(function () {
+            var $inlinehex = $('#hexcolor small');
+            var $inlineint = $('#intcolor small');
+
+            $('#inlinecolors').minicolors({
+                inline: true,
+                theme: 'bootstrap',
+                change: function (hex) {
+                    if (!hex) return;
+                    var $plainhex = hex.replace("#", "")
+                    $ledcolor = parseInt($plainhex, 16);
+                    $inlinehex.html(hex);
+                    $inlineint.html($ledcolor);
+                    var message = { "ledid": $ledid, "ledcolor": $ledcolor }
+                    socket.emit('ledon', message);
+                }
             });
-        </script>          
-    </body>
-</html>  
+        });
+    </script>
+</body>
+
+</html>

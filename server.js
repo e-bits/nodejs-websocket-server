@@ -13,12 +13,12 @@ app.use(bodyParser.urlencoded({
 io.on('connection', function (client) {
     console.log("WebSocket connection established");
     client.on('ledon', function (data) {
-        console.log("WebSocket: ledon arrived");
+        console.log(data);
         io.emit('ledon', data);
     });
 
     client.on('ledoff', function (data) {
-        console.log("WebSocket: ledon arrived");
+        console.log(data);
         io.emit('ledoff', data);
     });
 
@@ -59,5 +59,5 @@ router.route("/ledoff")
 
 app.use('/', router);
 
-server.listen(8080);
+server.listen(8080, "0.0.0.0");
 console.log("Listening to PORT 8080");
